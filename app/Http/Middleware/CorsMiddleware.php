@@ -16,11 +16,19 @@ class CorsMiddleware
         
         $origin = $request->header('Origin');
         
+        // Check if origin is allowed (hardcoded list)
+        $isAllowed = in_array($origin, $allowedOrigins);
+        
+        // Or if origin is from Vercel domain (dynamic subdomain)
+        if (!$isAllowed && $origin && str_contains($origin, 'vercel.app')) {
+            $isAllowed = true;
+        }
+        
         // Handle preflight requests
         if ($request->getMethod() === 'OPTIONS') {
             $response = response('', 200);
             
-            if (in_array($origin, $allowedOrigins)) {
+            if ($isAllowed) {
                 $response->headers->set('Access-Control-Allow-Origin', $origin);
             }
             
@@ -34,7 +42,7 @@ class CorsMiddleware
         
         $response = $next($request);
         
-        if (in_array($origin, $allowedOrigins)) {
+        if ($isAllowed) {
             $response->headers->set('Access-Control-Allow-Origin', $origin);
         }
         
