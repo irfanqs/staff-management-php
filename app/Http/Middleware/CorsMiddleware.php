@@ -10,7 +10,8 @@ class CorsMiddleware
     public function handle(Request $request, Closure $next)
     {
         $allowedOrigins = [
-            'https://staff-management-react.vercel.app',
+            // 'https://staff-management-react.vercel.app',
+            'https://staff-management-app1.vercel.app',
             'http://localhost:5173',
         ];
         
